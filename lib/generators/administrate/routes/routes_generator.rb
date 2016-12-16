@@ -8,7 +8,7 @@ module Administrate
       source_root File.expand_path("../templates", __FILE__)
 
       def insert_dashboard_routes
-        unless File.read(rails_routes_file_path).include?(dashboard_routes)
+        unless routes_includes_resources? || valid_dashboard_models.empty?
           route(dashboard_routes)
         end
       end
@@ -64,6 +64,10 @@ module Administrate
 
       def dashboard_routes
         ERB.new(File.read(routes_file_path)).result(binding)
+      end
+
+      def routes_includes_resources?
+        File.read(rails_routes_file_path).include?(dashboard_routes)
       end
 
       def rails_routes_file_path
